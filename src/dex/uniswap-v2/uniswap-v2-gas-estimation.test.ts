@@ -10,7 +10,7 @@ dotenv.config();
 
 describe('UniswapV2 Gas Estimation', () => {
   const dexKey = 'UniswapV2';
-  const network = Network.SEPOLIA;
+  const network = Network.MAINNET;
   const tokens = Tokens[network];
   // const ETH = tokens['AWESOME1'];
   const WETH = tokens['WETH'];
@@ -22,20 +22,16 @@ describe('UniswapV2 Gas Estimation', () => {
 
   const methods: ContractMethodV6[] = [
     ContractMethodV6.swapExactAmountInOnUniswapV2,
-    ContractMethodV6.swapExactAmountIn,
+    // ContractMethodV6.swapExactAmountIn,
   ];
 
   methods.forEach(async method => {
     describe(method, () => {
       it('one swap on testnet', async () => {
-        console.log('UniswapV2 Gas Estimation Tests1');
-        console.log('UniswapV2 Gas Estimation Tests2');
-        console.log('UniswapV2 Gas Estimation Tests3');
-
         await testGasEstimation(
           network,
-          tokens['fwUSDC'],
-          tokens['fwDAI'],
+          DAI,
+          WETH,
           amount,
           SwapSide.SELL,
           dexKey,

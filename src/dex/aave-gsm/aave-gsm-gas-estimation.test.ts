@@ -24,7 +24,7 @@ describe('AaveGsm Gas Estimation', () => {
       amount,
       SwapSide.SELL,
       dexKey,
-      ContractMethodV6.swapExactAmountIn,
+      ContractMethodV6.swapExactAmountInOnUniswapV2, //swapExactAmountIn,
     );
   });
 });

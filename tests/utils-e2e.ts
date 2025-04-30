@@ -158,13 +158,17 @@ class APIParaswapSDK implements IParaSwapSDK {
       console.log('will getRate. line=141');
 
       let priceRoute = {} as OptimalRate;
-      console.log('getPrices---->out.');
+      console.log('options=', options);
       console.log('this.paraSwap=', this.paraSwap);
       console.log('this.paraSwap.swap=', this.paraSwap.swap);
+      try {
+        priceRoute = await this.paraSwap.swap.getRate(options);
+        console.log('priceRoute=', priceRoute);
+      } catch (error) {
+        console.error('Error calling getRate:', error);
+      }
 
-      priceRoute = await this.paraSwap.swap.getRate(options);
-      console.log('priceRoute=', priceRoute);
-
+      console.log('getPrices---->out.');
       return priceRoute;
     }
 
@@ -569,10 +573,10 @@ export const testGasEstimation = async (
   targetDifference?: number,
 ) => {
   console.log('testGasEstimation. testingEndpoint=', testingEndpoint);
-  // assert(
-  //   testingEndpoint,
-  //   'Estimation can only be tested with testing endpoint',
-  // );
+  assert(
+    testingEndpoint,
+    'Estimation can only be tested with testing endpoint',
+  );
   // initialize pricing
   console.log('gasEstimate, line=565');
   const sdk = new APIParaswapSDK(network, dexKeys);
@@ -592,14 +596,14 @@ export const testGasEstimation = async (
     route,
   );
   console.log('gasEstimate, line=557, contractMethod=', contractMethod);
-  /**
+
   // make sure fetched route uses correct `contractMethod`
   assert(
     priceRoute.contractMethod === contractMethod,
     'Price route has incorrect contract method!',
   );
   // log the route for visibility
-  console.log('Price Route:', priceRoute);//JSON.stringify(priceRoute, null, 2));
+  console.log('Price Route:', priceRoute); //JSON.stringify(priceRoute, null, 2));
   // prepare state overrides
   const tenderlySimulator = TenderlySimulator.getInstance();
   // any address works
@@ -693,5 +697,4 @@ export const testGasEstimation = async (
   }
   // release
   await sdk.releaseResources();
-  */
 };
