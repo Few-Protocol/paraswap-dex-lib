@@ -572,17 +572,16 @@ export const testGasEstimation = async (
   route?: string[],
   targetDifference?: number,
 ) => {
-  console.log('testGasEstimation. testingEndpoint=', testingEndpoint);
+  console.log(
+    `testGasEstimation. testingEndpoint=${testingEndpoint}, contractMethod=${contractMethod}`,
+  );
   assert(
     testingEndpoint,
     'Estimation can only be tested with testing endpoint',
   );
   // initialize pricing
-  console.log('gasEstimate, line=565');
   const sdk = new APIParaswapSDK(network, dexKeys);
-  console.log('gasEstimate, line=567');
   await sdk.initializePricing();
-  console.log('gasEstimate, line=569');
 
   // fetch the route
   const priceRoute = await sdk.getPrices(
@@ -595,7 +594,10 @@ export const testGasEstimation = async (
     undefined,
     route,
   );
-  console.log('gasEstimate, line=557, contractMethod=', contractMethod);
+  console.log('testGasEstimation, contractMethod=', contractMethod);
+  console.log(
+    `testGasEstimation, priceRoute.method=${priceRoute.contractMethod}`,
+  );
 
   // make sure fetched route uses correct `contractMethod`
   assert(

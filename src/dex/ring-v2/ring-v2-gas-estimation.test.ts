@@ -9,7 +9,7 @@ import { ethers } from 'ethers';
 dotenv.config();
 
 describe('RingV2 Gas Estimation', () => {
-  const dexKey = 'RingV2';
+  const dexKey = 'UniswapV2'; //todo
   const network = Network.MAINNET;
   const tokens = Tokens[network];
   // const ETH = tokens['AWESOME1'];
@@ -22,8 +22,7 @@ describe('RingV2 Gas Estimation', () => {
 
   const methods: ContractMethodV6[] = [
     //ringtodo, why paraswap-sdk has no ring-v2
-    ContractMethodV6.swapExactAmountInOnRingV2,
-    ContractMethodV6.swapExactAmountInOnUniswapV2,
+    ContractMethodV6.swapExactAmountInOnUniswapV2, //todo
     // ContractMethodV6.swapExactAmountIn,
   ];
 
