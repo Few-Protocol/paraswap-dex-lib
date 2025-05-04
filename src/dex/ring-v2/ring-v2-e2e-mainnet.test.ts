@@ -18,18 +18,18 @@ describe('RingV2 E2E Mainnet', () => {
   );
 
   describe('RingV2', () => {
-    const dexKey = 'RingV2';
+    const dexKey = 'UniswapV2';
     console.log('[!!!!]RingV2 E2E Mainnet Tests');
     describe('RingV2 Simpleswap', () => {
       it('WETH -> DAI', async () => {
         await testE2E(
-          tokens.USDC,
-          tokens.USDT,
-          holders.USDC,
+          tokens.WETH,
+          tokens.DAI,
+          holders.WETH,
           '1000000',
           SwapSide.SELL,
           dexKey,
-          ContractMethod.simpleSwap,
+          ContractMethod.swapExactAmountInOnUniswapV2,
           network,
           provider,
         );
