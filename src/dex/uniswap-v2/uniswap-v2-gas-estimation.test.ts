@@ -12,26 +12,25 @@ describe('UniswapV2 Gas Estimation', () => {
   const dexKey = 'UniswapV2';
   const network = Network.MAINNET;
   const tokens = Tokens[network];
-  // const ETH = tokens['AWESOME1'];
+  const ETH = tokens['ETH'];
   const WETH = tokens['WETH'];
-  // const USDT = tokens['USDT'];
-  const DAI = tokens['DAI'];
-  // const USDC = tokens['USDC'];
-  // const WBTC = tokens['WBTC'];
+  const USDT = tokens['USDT'];
+  const USDC = tokens['USDC'];
+  const WBTC = tokens['WBTC'];
   const amount = 100000000n; // 100 usdt
 
   const methods: ContractMethodV6[] = [
     ContractMethodV6.swapExactAmountInOnUniswapV2,
-    // ContractMethodV6.swapExactAmountIn,
+    ContractMethodV6.swapExactAmountIn,
   ];
 
   methods.forEach(async method => {
     describe(method, () => {
-      it('one swap on testnet', async () => {
+      it('one swap', async () => {
         await testGasEstimation(
           network,
-          DAI,
-          WETH,
+          USDT,
+          USDC,
           amount,
           SwapSide.SELL,
           dexKey,
@@ -39,18 +38,61 @@ describe('UniswapV2 Gas Estimation', () => {
         );
       });
 
-      // it('one swap', async () => {
-      //   console.log('UniswapV2 Gas Estimation Tests, for swap and buy');
-      //   await testGasEstimation(
-      //     Network.MAINNET,
-      //     tokens['USDC'],
-      //     tokens['USDT'],
-      //     amount,
-      //     SwapSide.SELL,
-      //     dexKey,
-      //     method,
-      //   );
-      // });
+      it('one swap with unwrap', async () => {
+        await testGasEstimation(
+          network,
+          USDT,
+          ETH,
+          amount,
+          SwapSide.SELL,
+          dexKey,
+          method,
+        );
+      });
+
+      it('one swap with wrap', async () => {
+        const oneEth = ethers.utils.parseEther('1').toBigInt();
+
+        await testGasEstimation(
+          network,
+          ETH,
+          USDT,
+          oneEth,
+          SwapSide.SELL,
+          dexKey,
+          method,
+        );
+      });
+
+      it('two swaps', async () => {
+        const route = [USDT.address, WETH.address, USDC.address];
+
+        await testGasEstimation(
+          network,
+          USDT,
+          USDC,
+          amount,
+          SwapSide.SELL,
+          dexKey,
+          method,
+          route,
+        );
+      });
+
+      it('three swaps', async () => {
+        const route = [USDT.address, WETH.address, WBTC.address, USDC.address];
+
+        await testGasEstimation(
+          network,
+          USDT,
+          USDC,
+          amount,
+          SwapSide.SELL,
+          dexKey,
+          method,
+          route,
+        );
+      });
     });
   });
 });
