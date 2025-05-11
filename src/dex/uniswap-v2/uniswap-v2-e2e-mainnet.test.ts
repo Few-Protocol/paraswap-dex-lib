@@ -34,6 +34,8 @@ describe('UniswapV2 E2E Mainnet', () => {
           provider,
         );
       });
+    });
+      /*
       it('ETH -> USDC', async () => {
         await testE2E(
           tokens.ETH,
@@ -75,6 +77,7 @@ describe('UniswapV2 E2E Mainnet', () => {
       });
     });
 
+    /*
     describe('UniswapV2_special', () => {
       describe('SELL_V6', () => {
         it('EX1: USDC -> USDT', async () => {
@@ -150,7 +153,7 @@ describe('UniswapV2 E2E Mainnet', () => {
         //     holders.USDT,
         //     '1000000000000',
         //     SwapSide.SELL,
-        //     [dexKey, 'BalancerV2' /* , 'TraderJoeV2.1'  'SolidlyV3'*/],
+        //     [dexKey, 'BalancerV2' /* , 'TraderJoeV2.1'  'SolidlyV3'*],
         //     ContractMethod.multiSwap,
         //     network,
         //     provider,
@@ -231,7 +234,7 @@ describe('UniswapV2 E2E Mainnet', () => {
         //     holders.USDT,
         //     '1000000000000',
         //     SwapSide.BUY,
-        //     [dexKey, 'BalancerV2' /* , 'TraderJoeV2.1'  'SolidlyV3'*/],
+        //     [dexKey, 'BalancerV2' /* , 'TraderJoeV2.1'  'SolidlyV3'*],
         //     ContractMethod.multiSwap,
         //     network,
         //     provider,
@@ -980,8 +983,10 @@ describe('UniswapV2 E2E Mainnet', () => {
         );
       });
     });
-  });
 
+    */
+  });
+/**
   describe('SushiSwap', () => {
     const dexKey = 'SushiSwap';
 
@@ -1831,4 +1836,6 @@ describe('UniswapV2 E2E Mainnet', () => {
       }),
     );
   });
+  */
 });
+

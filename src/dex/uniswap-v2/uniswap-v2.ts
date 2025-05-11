@@ -863,6 +863,8 @@ export class UniswapV2
   ): DexExchangeParam {
     const pools = encodePools(data.pools, this.feeFactor);
 
+    console.log(`getDexParam.data==${data.router}, side=${side}`)
+
     let exchangeData: string;
     let specialDexFlag: SpecialDex;
     let transferSrcTokenBeforeSwap: Address | undefined;

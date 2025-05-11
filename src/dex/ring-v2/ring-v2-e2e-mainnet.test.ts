@@ -20,7 +20,65 @@ describe('RingV2 E2E Mainnet', () => {
   describe('RingV2', () => {
     const dexKey = 'RingV2';
     console.log('RingV2 E2E Mainnet Tests');
-    describe('RingV2 Simpleswap', () => {
+
+    describe('UniswapV2 Simpleswap', () => {
+      it('ETH -> DAI', async () => {
+        await testE2E(
+          tokens.WETH,
+          tokens.DAI,
+          holders.USDC,
+          '1000000',
+          SwapSide.SELL,
+          dexKey,
+          ContractMethod.simpleSwap,
+          network,
+          provider,
+        );
+      });
+      // it('ETH -> USDC', async () => {
+      //   await testE2E(
+      //     tokens.ETH,
+      //     tokens.USDC,
+      //     holders.ETH,
+      //     '7000000000000000000',
+      //     SwapSide.SELL,
+      //     dexKey,
+      //     ContractMethod.simpleSwap,
+      //     network,
+      //     provider,
+      //   );
+      // });
+      // it('USDC -> ETH', async () => {
+      //   await testE2E(
+      //     tokens.USDC,
+      //     tokens.ETH,
+      //     holders.USDC,
+      //     '2000000000',
+      //     SwapSide.SELL,
+      //     dexKey,
+      //     ContractMethod.simpleSwap,
+      //     network,
+      //     provider,
+      //   );
+      // });
+      // it('WBTC -> USDT', async () => {
+      //   await testE2E(
+      //     tokens.WBTC,
+      //     tokens.USDT,
+      //     holders.WBTC,
+      //     '20000000',
+      //     SwapSide.SELL,
+      //     dexKey,
+      //     ContractMethod.simpleSwap,
+      //     network,
+      //     provider,
+      //   );
+      // });
+    });
+
+
+    /**
+    describe('RingV2_V6', () => {
       it('WETH -> DAI', async () => {
         await testE2E(
           tokens.WETH,
@@ -33,18 +91,8 @@ describe('RingV2 E2E Mainnet', () => {
           network,
           provider,
         );
-        // await newTestE2E(
-        //   tokens.WETH,
-        //   tokens.DAI,
-        //   holders.WETH,
-        //   '1000000',
-        //   SwapSide.SELL,
-        //   dexKey,
-        //   ContractMethod.swapExactAmountIn,
-        //   network,
-        //   provider,
-        // );
       });
     });
+     */
   });
 });

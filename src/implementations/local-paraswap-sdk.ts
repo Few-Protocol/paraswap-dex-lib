@@ -166,7 +166,7 @@ export class LocalParaswapSDK implements IParaSwapSDK {
     );
 
     logger.debug(`finalPrice.exchange=${finalPrice.exchange}`);
-
+    logger.debug(`finalPrice.data=${finalPrice.data}`)
     const unoptimizedRate = {
       blockNumber,
       network: this.network,
@@ -213,7 +213,7 @@ export class LocalParaswapSDK implements IParaSwapSDK {
     };
 
     const optimizedRate = this.pricingHelper.optimizeRate(unoptimizedRate);
-
+    logger.debug(`optimizedRate=${optimizedRate.bestRoute[0].swaps[0].swapExchanges[0].data}`);
     return {
       ...optimizedRate,
       hmac: '0',

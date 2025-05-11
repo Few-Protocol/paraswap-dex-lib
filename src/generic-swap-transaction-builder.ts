@@ -630,6 +630,7 @@ export class GenericSwapTransactionBuilder {
 
     const isLastSwap =
       swapIndex === priceRoute.bestRoute[routeIndex].swaps.length - 1;
+    console.log(`isLastSwap=${isLastSwap}. isMegaSwap=${isMegaSwap}. isMultiSwap=${isMultiSwap}`)
 
     let _src = swap.srcToken;
     let wethDeposit = 0n;

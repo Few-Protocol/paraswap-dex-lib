@@ -125,7 +125,7 @@ export const RingV2Config: DexConfigMap<DexParams> = {
       subgraphURL: 'EYCKATKGBKLWvSfwvBjzfCBmGwYNdVkduYXVivCsLRFu',
       factoryAddress: '0xeb2A625B704d73e82946D8d026E1F588Eed06416',
       initCode:
-        '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f',
+        '0xa7ae6a5ec37f0c21bbdac560794258c4089b8ae3ffa6e3909b53c6091764a676',
       poolGasCost: 80 * 1000,
       feeCode: 30,
       router: '0x39d1d8fcC5E6EEAf567Bce4e29B94fec956D3519',

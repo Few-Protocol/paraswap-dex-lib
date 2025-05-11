@@ -328,6 +328,7 @@ export async function testE2E(
   if (sdk.releaseResources) {
     await sdk.releaseResources();
   }
+
   console.log(`testE2E--->out.simulation.status=${simulation.status}`);
   // assert simulation status
   expect(simulation.status).toEqual(true);
