@@ -1773,10 +1773,6 @@ export const Tokens: {
       address: `0x978206fae13faf5a8d293fb614326b237684b750`,
       decimals: 6,
     },
-    DAI: {
-      address: `0x5fbad067f69eBbc276410D78fF52823be133eD48`,
-      decimals: 18,
-    },
     USDT: {
       address: `0x7db5fA1170D15e8D02deFB483b833EB1f3bAAC38`,
       decimals: 6,
@@ -1787,6 +1783,14 @@ export const Tokens: {
     },
     AWESOME2: {
       address: `0xF8415EeE2509FCD26C392ECC9844D13c1Ad9c3E7`,
+      decimals: 18,
+    },
+    USDC: {
+      address: '0xA7a151d60Bbd522d3611C2dB3F1F972Ee9904B3e',
+      decimals: 18,
+    },
+    DAI: {
+      address: '0x5fbad067f69eBbc276410D78fF52823be133eD48',
       decimals: 18,
     },
     fwUSDC: {

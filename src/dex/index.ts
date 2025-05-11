@@ -57,6 +57,7 @@ import { Swerve } from './curve-v1/forks/swerve/swerve';
 import { CurveV1Factory } from './curve-v1-factory/curve-v1-factory';
 import { CurveV1StableNg } from './curve-v1-stable-ng/curve-v1-stable-ng';
 import { curveV1Merge } from './curve-v1-factory/optimizer';
+import { ringMerge } from './ring-v2/optimizer';
 import { GenericRFQ } from './generic-rfq/generic-rfq';
 import { WstETH } from './wsteth/wsteth';
 import { ERC4626 } from './erc4626/erc4626';
@@ -241,6 +242,7 @@ export class DexAdapterService {
     balancerV3Merge,
     uniswapMerge,
     curveV1Merge,
+    ringMerge,
   ];
 
   constructor(

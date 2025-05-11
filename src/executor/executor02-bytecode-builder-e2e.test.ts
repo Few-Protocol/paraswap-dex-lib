@@ -69,7 +69,7 @@ describe('Executor02ByteCodeBuilder e2e tests', () => {
             tokenAAmount,
             side,
             dexKeys,
-            contractMethod,
+            contractMethod, //simpleSwap
             network,
             provider,
             undefined,

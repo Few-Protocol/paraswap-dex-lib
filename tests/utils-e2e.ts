@@ -219,8 +219,11 @@ export async function testE2E(
   replaceTenderlyWithEstimateGas?: boolean,
   forceRoute?: AddressOrSymbol[],
 ) {
-  console.log('testE2E--->in.');
   const useAPI = testingEndpoint && !poolIdentifiers;
+  console.log(
+    `testE2E--->in.poolIdentifiers=${poolIdentifiers}. useAPI=${useAPI}`,
+  );
+
   // The API currently doesn't allow for specifying poolIdentifiers
   const sdk: IParaSwapSDK = useAPI
     ? new APIParaswapSDK(network, dexKeys, '')
@@ -325,7 +328,7 @@ export async function testE2E(
   if (sdk.releaseResources) {
     await sdk.releaseResources();
   }
-  console.log('testE2E--->out.');
+  console.log(`testE2E--->out.simulation.status=${simulation.status}`);
   // assert simulation status
   expect(simulation.status).toEqual(true);
 }
@@ -582,7 +585,6 @@ export const testGasEstimation = async (
   // initialize pricing
   const sdk = new APIParaswapSDK(network, dexKeys);
   await sdk.initializePricing();
-
   // fetch the route
   const priceRoute = await sdk.getPrices(
     srcToken,
@@ -594,6 +596,7 @@ export const testGasEstimation = async (
     undefined,
     route,
   );
+
   console.log('testGasEstimation, contractMethod=', contractMethod);
   console.log(
     `testGasEstimation, priceRoute.method=${priceRoute.contractMethod}`,

@@ -6,12 +6,14 @@ import { Executor02BytecodeBuilder } from './Executor02BytecodeBuilder';
 import { Executors, RouteExecutionType } from './types';
 import { Executor03BytecodeBuilder } from './Executor03BytecodeBuilder';
 import { WETHBytecodeBuilder, isSingleWrapRoute } from './WETHBytecodeBuilder';
+import { Logger } from '../types';
 
 export class ExecutorDetector {
   private executor01BytecodeBuilder: ExecutorBytecodeBuilder;
   private executor02BytecodeBuilder: ExecutorBytecodeBuilder;
   private executor03BytecodeBuilder: ExecutorBytecodeBuilder;
   private wethBytecodeBuilder: ExecutorBytecodeBuilder;
+  private logger: Logger;
 
   protected routeExecutionTypeToExecutorMap: Record<
     SwapSide,
@@ -33,6 +35,7 @@ export class ExecutorDetector {
   };
 
   constructor(protected dexHelper: IDexHelper) {
+    this.logger = dexHelper.getLogger('ExecutorDetector');
     this.executor01BytecodeBuilder = new Executor01BytecodeBuilder(
       this.dexHelper,
     );
@@ -93,12 +96,17 @@ export class ExecutorDetector {
 
   getExecutorByPriceRoute(priceRoute: OptimalRate): Executors {
     const specialExecutor = this.detectSpecialExecutor(priceRoute);
-    if (specialExecutor) return specialExecutor;
+    this.logger.debug(`specialExecutor=${specialExecutor}`);
+    if (specialExecutor) {
+      return specialExecutor;
+    }
 
     const routeExecutionType = this.getRouteExecutionType(priceRoute);
     const executorName =
       this.routeExecutionTypeToExecutorMap[priceRoute.side][routeExecutionType];
-
+    this.logger.debug(
+      `routeExecutionType=${routeExecutionType}. executorName=${executorName}`,
+    );
     if (executorName) {
       return executorName;
     }

@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 // TODO: use something similar for DODO as well
 export function ringMerge(or: UnoptimizedRate): UnoptimizedRate {
+  console.log(`ringMerge-->in.`);
   const fixRoute = (rawRate: OptimalSwap[]): OptimalSwap[] => {
     let lastExchange: false | OptimalSwap = false;
     let optimizedRate = new Array<OptimalSwap>();
@@ -30,6 +31,7 @@ export function ringMerge(or: UnoptimizedRate): UnoptimizedRate {
           s.swapExchanges[0].data.path[1],
         );
         const currentName = lastExchange.swapExchanges[0].exchange;
+        console.log(`ringmerge: currentName=${currentName}`);
         const newName = s.swapExchanges[0].exchange;
         lastExchange.swapExchanges[0].exchange =
           currentName === newName ? currentName : 'RingForkOptimized';

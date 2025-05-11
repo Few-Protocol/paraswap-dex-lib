@@ -34,6 +34,7 @@ export class PricingHelper {
         (acc: UnoptimizedRate, fn: IRouteOptimizer<UnoptimizedRate>) => fn(acc),
         ur,
       );
+    console.log(`PricingHelper的构造`);
   }
 
   private async initializeDex(dexKey: string, blockNumber: number) {

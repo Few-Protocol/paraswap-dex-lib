@@ -116,6 +116,7 @@ export class GenericSwapTransactionBuilder {
             );
 
             const executorAddress = bytecodeBuilder.getAddress();
+            console.log(`buildCalls:executorAddress=${executorAddress}`);
             const {
               srcToken,
               destToken,
@@ -254,6 +255,8 @@ export class GenericSwapTransactionBuilder {
       isDirectFeeTransfer,
       priceRoute,
     });
+
+    console.log(`executionContractAddress=${executionContractAddress}`);
 
     const swapParams = [
       executionContractAddress,

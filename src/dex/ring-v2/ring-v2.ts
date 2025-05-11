@@ -70,6 +70,7 @@ import {
   hexConcat,
 } from 'ethers/lib/utils';
 import { BigNumber } from 'ethers';
+import { getFWTokenForToken } from './fw-token-helper';
 
 const rebaseTokens = _rebaseTokens as { chainId: number; address: string }[];
 
@@ -281,6 +282,8 @@ export class RingV2
 
     this.routerInterface = new Interface(ParaSwapABI);
     this.exchangeRouterInterface = new Interface(RingV2ExchangeRouterABI);
+
+    this.logger.debug(`router=${RingV2Config[dexKey][network].router}`);
   }
 
   // getFeesMultiCallData should be override
@@ -469,7 +472,10 @@ export class RingV2
       }
     }
 
-    if (!pairsToFetch.length) return;
+    if (!pairsToFetch.length) {
+      this.logger.debug(`parsToFetch.len=${pairsToFetch.length}`);
+      return;
+    }
 
     const reserves = await this.getManyPoolReserves(pairsToFetch, blockNumber);
 
@@ -551,8 +557,11 @@ export class RingV2
     side: SwapSide,
     blockNumber: number,
   ): Promise<string[]> {
-    const from = this.dexHelper.config.wrapETH(_from);
-    const to = this.dexHelper.config.wrapETH(_to);
+    // const from = this.dexHelper.config.wrapETH(_from);
+    // const to = this.dexHelper.config.wrapETH(_to);
+
+    const from = getFWTokenForToken(_from, this.network);
+    const to = getFWTokenForToken(_to, this.network);
 
     if (from.address.toLowerCase() === to.address.toLowerCase()) {
       return [];
@@ -582,9 +591,15 @@ export class RingV2
     },
   ): Promise<ExchangePrices<RingV2Data> | null> {
     try {
-      const from = this.dexHelper.config.wrapETH(_from);
-      const to = this.dexHelper.config.wrapETH(_to);
+      this.logger.debug(`origin_from=${_from.address}`);
+      this.logger.debug(`origin_to=${_to.address}`);
 
+      // const from = this.dexHelper.config.wrapETH(_from);
+      // const to = this.dexHelper.config.wrapETH(_to);
+      const from = getFWTokenForToken(_from, this.network);
+      const to = getFWTokenForToken(_to, this.network);
+      this.logger.debug(`getPricesVolume:from=${from.address}`);
+      this.logger.debug(`getPricesVolume:to=${to.address}`);
       if (from.address.toLowerCase() === to.address.toLowerCase()) {
         return null;
       }
@@ -598,8 +613,10 @@ export class RingV2
 
       const poolIdentifier = `${this.dexKey}_${tokenAddress}`;
 
-      if (limitPools && limitPools.every(p => p !== poolIdentifier))
+      if (limitPools && limitPools.every(p => p !== poolIdentifier)) {
+        this.logger.debug('Pool not in limitPools');
         return null;
+      }
 
       await this.batchCatchUpPairs([[from, to]], blockNumber);
       const isSell = side === SwapSide.SELL;
@@ -610,7 +627,10 @@ export class RingV2
         transferFees.srcDexFee,
       );
       this.logger.debug('Pair Param:', { pairParam });
-      if (!pairParam) return null;
+      if (!pairParam) {
+        this.logger.debug('No pair parameters found');
+        return null;
+      }
 
       const unitAmount = getBigIntPow(isSell ? from.decimals : to.decimals);
 
@@ -653,6 +673,13 @@ export class RingV2
       );
 
       this.logger.debug(`Unit Out With Fee: ${unitOutWithFee}`);
+
+      this.logger.debug(
+        `this.factoryAddress=${this.factoryAddress}. initCode=${this.initCode}`,
+      );
+      this.logger.debug(
+        `this.router=${this.router}. pairParam.exchange=${pairParam.exchange}`,
+      );
       // As ringv2 just has one pool per token pair
       return [
         {
@@ -679,6 +706,8 @@ export class RingV2
         },
       ];
     } catch (e) {
+      this.logger.debug('Error in getPricesVolume');
+
       if (blockNumber === 0)
         this.logger.error(
           `Error_getPricesVolume: Aurelius block manager not yet instantiated`,
@@ -845,6 +874,7 @@ export class RingV2
     data: RingData,
     side: SwapSide,
   ): Promise<SimpleExchangeParam> {
+    console.log(`getSimpleParam--->in`);
     const pools = encodePools(data.pools, this.feeFactor);
     const weth = this.getWETHAddress(src, dest, data.weth);
     const swapData = this.exchangeRouterInterface.encodeFunctionData(
@@ -895,6 +925,8 @@ export class RingV2
     data: RingData,
     side: SwapSide,
   ): DexExchangeParam {
+    console.log(`getDexParam--->in`);
+
     const pools = encodePools(data.pools, this.feeFactor);
 
     let exchangeData: string;
@@ -974,6 +1006,7 @@ export class RingV2
     beneficiary: string,
     contractMethod: string,
   ): TxInfo<RingParam> {
+    console.log(`getDirectParam--->in`);
     if (!contractMethod) throw new Error(`contractMethod need to be passed`);
     if (permit !== '0x') contractMethod += 'WithPermit';
 
@@ -1050,6 +1083,8 @@ export class RingV2
     blockNumber: number,
     contractMethod: string,
   ) {
+    console.log(`getDirectParam V6--->in`);
+
     if (!contractMethod) throw new Error(`contractMethod need to be passed`);
     if (!RingV2.getDirectFunctionNameV6().includes(contractMethod!)) {
       throw new Error(`Invalid contract method ${contractMethod}`);
@@ -1125,6 +1160,8 @@ export class RingV2
       );
       return '0x';
     }
+
+    console.log(`_encodePathV6--->in`);
 
     // v6 expects weth for eth in pools
     if (isETHAddress(path.srcToken)) {

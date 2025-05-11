@@ -55,6 +55,7 @@ export interface IParaSwapSDK {
 
 const chunks = 10;
 
+//自定义 DEX 键和 RPC URL
 export class LocalParaswapSDK implements IParaSwapSDK {
   dexHelper: IDexHelper;
   dexAdapterService: DexAdapterService;
@@ -146,6 +147,8 @@ export class LocalParaswapSDK implements IParaSwapSDK {
       throw new Error('Fail to get price for ' + this.dexKeys.join(', '));
 
     const finalPrice = poolPrices[0];
+    const logger = this.dexHelper.getLogger('LocalParaswapSDK');
+    logger.debug(`localParaSwap::finalPrice:${finalPrice}`);
     const quoteAmount = finalPrice.prices[chunks];
     const srcAmount = (
       side === SwapSide.SELL ? amount : quoteAmount
@@ -154,14 +157,15 @@ export class LocalParaswapSDK implements IParaSwapSDK {
       side === SwapSide.SELL ? quoteAmount : amount
     ).toString();
 
-    // eslint-disable-next-line no-console
-    console.log(
+    logger.debug(
       `Estimated gas cost for ${this.dexKeys}: ${
         Array.isArray(finalPrice.gasCost)
           ? finalPrice.gasCost[finalPrice.gasCost.length - 1]
           : finalPrice.gasCost
       }`,
     );
+
+    logger.debug(`finalPrice.exchange=${finalPrice.exchange}`);
 
     const unoptimizedRate = {
       blockNumber,
