@@ -487,6 +487,14 @@ export const Tokens: {
       address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E',
       decimals: 18,
     },
+    cbBTC: {
+      address: '0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+      decimals: 8,
+    },
+    UNI: {
+      address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+      decimals: 18,
+    },
     wibBTC: {
       address: '0x8751d4196027d4e6da63716fa7786b5174f04c15',
       decimals: 18,

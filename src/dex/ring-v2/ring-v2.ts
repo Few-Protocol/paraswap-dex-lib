@@ -70,7 +70,7 @@ import {
   hexConcat,
 } from 'ethers/lib/utils';
 import { BigNumber } from 'ethers';
-import { getFWTokenForToken } from './fw-token-helper';
+import { computeFWTokenAddress, getFWTokenForToken } from './fw-token-helper';
 
 const rebaseTokens = _rebaseTokens as { chainId: number; address: string }[];
 
@@ -874,7 +874,7 @@ export class RingV2
     data: RingData,
     side: SwapSide,
   ): Promise<SimpleExchangeParam> {
-    console.log(`getSimpleParam--->in`);
+    this.logger.debug(`getSimpleParam--->in`);
     const pools = encodePools(data.pools, this.feeFactor);
     const weth = this.getWETHAddress(src, dest, data.weth);
     const swapData = this.exchangeRouterInterface.encodeFunctionData(
@@ -925,90 +925,80 @@ export class RingV2
     data: RingData,
     side: SwapSide,
   ): DexExchangeParam {
-    console.log(`getDexParam--->in. dexKey=${this.dexKey}. srcToken=${srcToken}.dstToken=${destToken}`);
-
-    // const pools = encodePools(data.pools, this.feeFactor);
-
-    // let exchangeData: string;
-    // let specialDexFlag: SpecialDex;
-    // let transferSrcTokenBeforeSwap: Address | undefined;
-    // let targetExchange: Address;
-    // let dexFuncHasRecipient: boolean;
-
-    // let ttl = 180
-    // const deadline =
-    //   `0x${(Math.floor(new Date().getTime() / 1000) + ttl).toString(16)}`
-
-    // if (this.dexKey === 'RingV2') {
-    //   let path: Address[] = [srcToken, destToken];
-    //   exchangeData = this.exchangeRouterInterface.encodeFunctionData(
-    //       RingV2Functions.swapExactTokensForTokens,
-    //       [srcAmount, destAmount, path, recipient, deadline]
-    //       // [srcToken, srcAmount, destAmount, weth, pools],
-    //     );
-    //           specialDexFlag = SpecialDex.SWAP_ON_UNISWAP_V2_FORK;
-    //           // transferSrcTokenBeforeSwap
-    //                 targetExchange = data.router;
-    //                 dexFuncHasRecipient = true;
-    // }
-    // else
-
-    // // if (this.dexKey === 'BakerySwap') {
-    // //   const weth = this.getWETHAddress(srcToken, destToken, data.weth);
-
-    // //   exchangeData = this.exchangeRouterInterface.encodeFunctionData(
-    // //     RingV2Functions.swap,
-    // //     [srcToken, srcAmount, destAmount, weth, pools],
-    // //   );
-    // //   specialDexFlag = SpecialDex.DEFAULT;
-    // //   targetExchange = data.router;
-    // //   dexFuncHasRecipient = false;
-    // // } else if (side === SwapSide.SELL) {
-
-    // if (side === SwapSide.SELL) {
-    //   // 28 bytes are prepended in the Bytecode builder
-    //   const exchangeDataTypes = ['bytes4', 'bytes32', 'bytes32'];
-    //   const exchangeDataToPack = [
-    //     hexZeroPad(hexlify(0), 4),
-    //     hexZeroPad(hexlify(data.pools.length), 32), // pool count
-    //     hexZeroPad(hexlify(BigNumber.from(srcAmount)), 32),
-    //   ];
-    //   pools.forEach(pool => {
-    //     exchangeDataTypes.push('bytes32');
-    //     exchangeDataToPack.push(hexZeroPad(hexlify(BigNumber.from(pool)), 32));
-    //   });
-
-    //   exchangeData = solidityPack(exchangeDataTypes, exchangeDataToPack);
-    //   specialDexFlag = SpecialDex.SWAP_ON_UNISWAP_V2_FORK;
-    //   transferSrcTokenBeforeSwap = data.pools[0].address;
-    //   targetExchange = recipient;
-    //   dexFuncHasRecipient = true;
-    // } else {
-    //   const weth = this.getWETHAddress(srcToken, destToken, data.weth);
-
-    //   exchangeData = this.exchangeRouterInterface.encodeFunctionData(
-    //     RingV2Functions.buy,
-    //     [srcToken, srcAmount, destAmount, weth, pools],
-    //   );
-    //   specialDexFlag = SpecialDex.DEFAULT;
-    //   targetExchange = data.router;
-    //   dexFuncHasRecipient = false;
-    // }
-
-    // return {
-    //   needWrapNative: this.needWrapNative,
-    //   specialDexSupportsInsertFromAmount: true,
-    //   dexFuncHasRecipient,
-    //   exchangeData,
-    //   targetExchange,
-    //   specialDexFlag,
-    //   transferSrcTokenBeforeSwap,
-    //   returnAmountPos: undefined,
-    // };
+    this.logger.debug(`getDexParam--->in. dexKey=${this.dexKey}. srcToken=${srcToken}.dstToken=${destToken}`);
 
     const pools = encodePools(data.pools, this.feeFactor);
+
+    let exchangeData: string;
+    let specialDexFlag: SpecialDex;
+    let transferSrcTokenBeforeSwap: Address | undefined;
+    let targetExchange: Address;
+    let dexFuncHasRecipient: boolean;
+
+    let ttl = 180
+    const deadline =
+      `0x${(Math.floor(new Date().getTime() / 1000) + ttl).toString(16)}`
+
+    const RING_V2_DEX_KEY = 'RingV2' as const;
+    if (this.dexKey !== RING_V2_DEX_KEY) {
+      throw new Error(`Invalid dex key: ${this.dexKey}. Expected: ${RING_V2_DEX_KEY}`);
+    }
+
+    this.logger.debug(`is this the ring dex=${this.dexKey}. side=${side}`)
+    const fwAddress = computeFWTokenAddress(srcToken, this.network);
+    const fwAddress_to = computeFWTokenAddress(destToken, this.network);
+    let path: Address[] = [fwAddress, fwAddress_to];
+    //
+    if (isETHAddress(srcToken)) {
+      if (side == SwapSide.SELL) {
+        exchangeData = this.exchangeRouterInterface.encodeFunctionData(
+            RingV2Functions.swapExactETHForTokens,
+            [destAmount, path, recipient, deadline]
+        );
+      }
+      else {
+        exchangeData = this.exchangeRouterInterface.encodeFunctionData(
+          RingV2Functions.swapETHForExactTokens,
+          [srcAmount, destAmount, path, recipient, deadline]
+        );
+      }
+    }
+    else {
+      if (side == SwapSide.SELL) {
+        exchangeData = this.exchangeRouterInterface.encodeFunctionData(
+            RingV2Functions.swapExactTokensForTokens,
+            [srcAmount, destAmount, path, recipient, deadline]
+          );
+      }
+      else {
+        exchangeData = this.exchangeRouterInterface.encodeFunctionData(
+          RingV2Functions.swapTokensForExactTokens,
+          [srcAmount, destAmount, path, recipient, deadline]
+        );
+      }
+    }
+
+    specialDexFlag = SpecialDex.SWAP_ON_UNISWAP_V2_FORK;
+    specialDexFlag = SpecialDex.DEFAULT;
+    // transferSrcTokenBeforeSwap
+    targetExchange = data.router;
+    dexFuncHasRecipient = true;
+
+  return {
+    needWrapNative: this.needWrapNative,
+    specialDexSupportsInsertFromAmount: true,
+    dexFuncHasRecipient,
+    exchangeData,
+    targetExchange,
+    specialDexFlag,
+    transferSrcTokenBeforeSwap,
+    returnAmountPos: undefined,
+  };
+
+    /**
+    const pools = encodePools(data.pools, this.feeFactor);
     
-        console.log(`getDexParam.data==${data.router}, side=${side}`)
+        this.logger.debug(`getDexParam.data==${data.router}, side=${side}`)
     
         let exchangeData: string;
         let specialDexFlag: SpecialDex;
@@ -1028,6 +1018,7 @@ export class RingV2
         //   dexFuncHasRecipient = false;
         // } else if (side === SwapSide.SELL) {
     
+        // 这个 exchangeData 不是直接传给 pool 的 swap 方法的参数，而是传给 ParaSwap 的 Executor 合约的参数。
         if (side === SwapSide.SELL) {
           // 28 bytes are prepended in the Bytecode builder
           const exchangeDataTypes = ['bytes4', 'bytes32', 'bytes32'];
@@ -1068,6 +1059,7 @@ export class RingV2
           transferSrcTokenBeforeSwap,
           returnAmountPos: undefined,
         };
+        */
   }
 
   // TODO: Move to new ringv2&forks router interface
@@ -1087,7 +1079,7 @@ export class RingV2
     beneficiary: string,
     contractMethod: string,
   ): TxInfo<RingParam> {
-    console.log(`getDirectParam--->in`);
+    this.logger.debug(`getDirectParam--->in`);
     if (!contractMethod) throw new Error(`contractMethod need to be passed`);
     if (permit !== '0x') contractMethod += 'WithPermit';
 
@@ -1164,7 +1156,7 @@ export class RingV2
     blockNumber: number,
     contractMethod: string,
   ) {
-    console.log(`getDirectParam V6--->in`);
+    this.logger.debug(`getDirectParam V6--->in`);
 
     if (!contractMethod) throw new Error(`contractMethod need to be passed`);
     if (!RingV2.getDirectFunctionNameV6().includes(contractMethod!)) {
@@ -1242,7 +1234,7 @@ export class RingV2
       return '0x';
     }
 
-    console.log(`_encodePathV6--->in`);
+    this.logger.debug(`_encodePathV6--->in`);
 
     // v6 expects weth for eth in pools
     if (isETHAddress(path.srcToken)) {

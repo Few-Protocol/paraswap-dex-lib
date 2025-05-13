@@ -21,12 +21,26 @@ describe('RingV2 E2E Mainnet', () => {
     const dexKey = 'RingV2';
     console.log('RingV2 E2E Mainnet Tests');
 
-    describe('UniswapV2 Simpleswap', () => {
+    describe('RingV2 Simpleswap', () => {
+      /*
       it('ETH -> DAI', async () => {
         await testE2E(
           tokens.WETH,
           tokens.DAI,
-          holders.USDC,
+          holders.WETH,
+          '1000000',
+          SwapSide.SELL,
+          dexKey,
+          ContractMethod.simpleSwap,
+          network,
+          provider,
+        );
+      });*/
+      it('cbBTC -> UNI', async () => {
+        await testE2E(
+          tokens.cbBTC,
+          tokens.UNI,
+          holders.ETH,
           '1000000',
           SwapSide.SELL,
           dexKey,
@@ -35,19 +49,19 @@ describe('RingV2 E2E Mainnet', () => {
           provider,
         );
       });
-      // it('ETH -> USDC', async () => {
-      //   await testE2E(
-      //     tokens.ETH,
-      //     tokens.USDC,
-      //     holders.ETH,
-      //     '7000000000000000000',
-      //     SwapSide.SELL,
-      //     dexKey,
-      //     ContractMethod.simpleSwap,
-      //     network,
-      //     provider,
-      //   );
-      // });
+      it('WETH -> UNI', async () => {
+        await testE2E(
+          tokens.WETH,
+          tokens.UNI,
+          holders.ETH,
+          '1000000',
+          SwapSide.SELL,
+          dexKey,
+          ContractMethod.simpleSwap,
+          network,
+          provider,
+        );
+      });
       // it('USDC -> ETH', async () => {
       //   await testE2E(
       //     tokens.USDC,

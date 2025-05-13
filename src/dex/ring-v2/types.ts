@@ -27,6 +27,10 @@ export enum RingV2Functions {
   swapOnRingV2ForkWithPermit = 'swapOnUniswapV2ForkWithPermit',
   buyOnRingV2ForkWithPermit = 'buyOnUniswapV2ForkWithPermit',
   swapExactTokensForTokens = 'swapExactTokensForTokens',
+  swapExactETHForTokens = 'swapExactETHForTokens',
+  swapTokensForExactTokens = 'swapTokensForExactTokens',
+  swapTokensForExactETH = 'swapTokensForExactETH',
+  swapETHForExactTokens = 'swapETHForExactTokens',
 }
 //ring_todo, augu sdk has no swapExactAmountInOnRingV2
 //sdk

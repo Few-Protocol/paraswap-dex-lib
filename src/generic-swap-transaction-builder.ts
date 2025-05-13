@@ -116,7 +116,6 @@ export class GenericSwapTransactionBuilder {
             );
 
             const executorAddress = bytecodeBuilder.getAddress();
-            console.log(`buildCalls:executorAddress=${executorAddress}`);
             const {
               srcToken,
               destToken,
@@ -255,8 +254,6 @@ export class GenericSwapTransactionBuilder {
       isDirectFeeTransfer,
       priceRoute,
     });
-
-    console.log(`executionContractAddress=${executionContractAddress}`);
 
     const swapParams = [
       executionContractAddress,
@@ -630,7 +627,7 @@ export class GenericSwapTransactionBuilder {
 
     const isLastSwap =
       swapIndex === priceRoute.bestRoute[routeIndex].swaps.length - 1;
-    console.log(`isLastSwap=${isLastSwap}. isMegaSwap=${isMegaSwap}. isMultiSwap=${isMultiSwap}`)
+      //
 
     let _src = swap.srcToken;
     let wethDeposit = 0n;
