@@ -162,6 +162,7 @@ export class RingV2EventPool extends StatefulEventSubscriber<RingV2PoolState> {
     if (!LogCallTopics.includes(log.topics[0])) return null;
 
     const event = this.decoder(log);
+    this.logger.debug("event=${event}")
     switch (event.name) {
       case 'Sync':
         return {
@@ -935,7 +936,7 @@ export class RingV2
     let targetExchange: Address;
     let dexFuncHasRecipient: boolean;
 
-    let ttl = 180
+    let ttl = 1200;
     const deadline =
       `0x${(Math.floor(new Date().getTime() / 1000) + ttl).toString(16)}`
 
@@ -959,7 +960,7 @@ export class RingV2
       else {
         exchangeData = this.exchangeRouterInterface.encodeFunctionData(
           RingV2Functions.swapETHForExactTokens,
-          [srcAmount, destAmount, path, recipient, deadline]
+          [srcAmount, path, recipient, deadline]
         );
       }
     }
@@ -973,7 +974,7 @@ export class RingV2
       else {
         exchangeData = this.exchangeRouterInterface.encodeFunctionData(
           RingV2Functions.swapTokensForExactTokens,
-          [srcAmount, destAmount, path, recipient, deadline]
+          [destAmount, srcAmount, path, recipient, deadline]
         );
       }
     }

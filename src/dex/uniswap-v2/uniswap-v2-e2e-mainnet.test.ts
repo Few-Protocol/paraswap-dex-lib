@@ -76,7 +76,7 @@ describe('UniswapV2 E2E Mainnet', () => {
         );
       });
     });
-
+*/
     /*
     describe('UniswapV2_special', () => {
       describe('SELL_V6', () => {
@@ -132,6 +132,10 @@ describe('UniswapV2 E2E Mainnet', () => {
             provider,
           );
         });
+        */
+
+        
+      describe('UniswapV2_special', () => {
         it('EX1: PSP -> WETH -> USDT', async () => {
           await testE2E(
             tokens.PSP,
@@ -145,6 +149,8 @@ describe('UniswapV2 E2E Mainnet', () => {
             provider,
           );
         });
+      });
+        /*
         // TODO: Update: goes through balancer only
         // it('EX2: USDT -> USDC', async () => {
         //   await testE2E(

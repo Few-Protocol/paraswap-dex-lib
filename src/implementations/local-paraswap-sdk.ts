@@ -150,6 +150,7 @@ export class LocalParaswapSDK implements IParaSwapSDK {
     const logger = this.dexHelper.getLogger('LocalParaswapSDK');
     logger.debug(`localParaSwap::finalPrice:${finalPrice}`);
     const quoteAmount = finalPrice.prices[chunks];
+    logger.debug(`localParaSwap::finalPrice.quoteAmount=:${quoteAmount}`);
     const srcAmount = (
       side === SwapSide.SELL ? amount : quoteAmount
     ).toString();

@@ -450,6 +450,7 @@ export async function newTestE2E({
   if (useTenderly) {
     // assemble `SimulationRequest`
     const { from, to, data, value } = swapParams;
+    console.log(`from_to_value=${from}, ${to}, ${value}`)
     const simulationRequest = {
       chainId: network,
       from,
